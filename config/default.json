@@ -1,11 +1,11 @@
 {
-    "mysql":{
+    "mysql": {
         "banco-de-dados": "petshop",
         "usuario": "root",
         "senha": "root",
         "host": "127.0.0.1"
     },
-    "api":{
+    "api": {
         "porta": 3000
     }
 }

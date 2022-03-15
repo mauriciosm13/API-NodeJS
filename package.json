@@ -1,25 +1,17 @@
 {
-  "name": "API_NodeJS",
+  "name": "api-petshop",
   "version": "1.0.0",
-  "description": "Creating an API with NodeJS",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mauriciosm13/API-NodeJS.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mauriciosm13/API-NodeJS/issues"
-  },
-  "homepage": "https://github.com/mauriciosm13/API-NodeJS#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "config": "^3.3.7",
+    "config": "^3.3.1",
     "express": "^4.17.1",
     "jsontoxml": "^1.0.1",
     "mysql2": "^2.1.0",
