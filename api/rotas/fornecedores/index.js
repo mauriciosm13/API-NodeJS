@@ -1,7 +1,6 @@
 const roteador = require('express').Router();
 const tabelaFornecedor = require('./tabelaFornecedor')
 const Fornecedor = require('./Fornecedor');
-const req = require('express/lib/request');
 
 roteador.get('/', async(requisicao, resposta) => {
     const resultados = await tabelaFornecedor.listar();
@@ -11,7 +10,7 @@ roteador.get('/', async(requisicao, resposta) => {
     )
 });
 
-roteador.post('/', async(requisicao, resposta) => {
+roteador.post('/', async(requisicao, resposta, proximo) => {
     try {
         const dadosRecebidos = requisicao.body
         const fornecedor = new Fornecedor(dadosRecebidos)
@@ -21,17 +20,12 @@ roteador.post('/', async(requisicao, resposta) => {
             JSON.stringify(fornecedor)
         )
     } catch (error) {
-        resposta.status(400)
-        resposta.send(
-            JSON.stringify({
-                mensagem: error.mensagem
-            })
-        )
+        proximo(error)
     }
 
 })
 
-roteador.get('/:idFornecedor', async(requisicao, resposta) => {
+roteador.get('/:idFornecedor', async(requisicao, resposta, proximo) => {
     try {
         const id = requisicao.params.idFornecedor
         const fornecedor = new Fornecedor({ id: id })
@@ -40,17 +34,12 @@ roteador.get('/:idFornecedor', async(requisicao, resposta) => {
         resposta.send(
             JSON.stringify(fornecedor)
         )
-    } catch (erro) {
-        resposta.status(401)
-        resposta.send(
-            JSON.stringify({
-                mensagem: erro.message
-            })
-        )
+    } catch (error) {
+        proximo(error)
     }
 })
 
-roteador.put('/:idFornecedor', async(requisicao, resposta) => {
+roteador.put('/:idFornecedor', async(requisicao, resposta, proximo) => {
     try {
         const id = requisicao.params.idFornecedor;
         const dadosRecebidos = requisicao.body;
@@ -60,29 +49,19 @@ roteador.put('/:idFornecedor', async(requisicao, resposta) => {
         resposta.status(204)
         resposta.end();
     } catch (erro) {
-        resposta.status(400)
-        resposta.send(
-            JSON.stringify({
-                mensagem: erro
-            })
-        )
+        proximo(erro)
     }
 })
 
-roteador.delete('/:idFornecedor', async(requisicao, resposta) => {
+roteador.delete('/:idFornecedor', async(requisicao, resposta, proximo) => {
     try {
         const id = requisicao.params.idFornecedor
         const forncedor = new Fornecedor({ id: id })
         await forncedor.remover()
         resposta.status(204)
         resposta.end()
-    } catch (erro) {
-        resposta.status(404)
-        resposta.send(
-            JSON.stringify({
-                mensagem: erro
-            })
-        )
+    } catch (error) {
+        proximo(error)
     }
 })
 
