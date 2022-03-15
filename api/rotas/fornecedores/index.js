@@ -1,12 +1,16 @@
 const roteador = require('express').Router();
 const tabelaFornecedor = require('./tabelaFornecedor')
 const Fornecedor = require('./Fornecedor');
+const SerealizadorFornecedor = require('../../Serializador').SerealizadorFornecedor;
 
 roteador.get('/', async(requisicao, resposta) => {
     const resultados = await tabelaFornecedor.listar();
     resposta.status(200)
+    const serializador = new SerealizadorFornecedor(
+        resposta.getHeader('Content-Type')
+    )
     resposta.send(
-        JSON.stringify(resultados)
+        serializador.serealizar(resultados)
     )
 });
 
@@ -16,8 +20,11 @@ roteador.post('/', async(requisicao, resposta, proximo) => {
         const fornecedor = new Fornecedor(dadosRecebidos)
         await fornecedor.criar()
         resposta.status(201)
+        const serializador = new SerealizadorFornecedor(
+            resposta.getHeader('Content-Type')
+        )
         resposta.send(
-            JSON.stringify(fornecedor)
+            serializador.serealizar(fornecedor)
         )
     } catch (error) {
         proximo(error)
@@ -31,8 +38,11 @@ roteador.get('/:idFornecedor', async(requisicao, resposta, proximo) => {
         const fornecedor = new Fornecedor({ id: id })
         await fornecedor.carregarPorId()
         resposta.status(200)
+        const serializador = new SerealizadorFornecedor(
+            resposta.getHeader('Content-Type')
+        )
         resposta.send(
-            JSON.stringify(fornecedor)
+            serializador.serealizar(fornecedor)
         )
     } catch (error) {
         proximo(error)
