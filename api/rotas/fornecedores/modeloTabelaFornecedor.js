@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const instancia = require('../../banco-de-dados');
+const Sequelize = require('sequelize')
+const instancia = require('../../banco-de-dados')
 
 const colunas = {
     empresa: {
@@ -20,8 +20,8 @@ const opcoes = {
     freezeTableName: true,
     tableName: 'fornecedores',
     timestamps: true,
-    createAt: 'dataCriacao',
-    updateAt: 'dataAtualizacao',
+    createdAt: 'dataCriacao',
+    updatedAt: 'dataAtualizacao',
     version: 'versao'
 }
 

@@ -58,4 +58,4 @@ app.use((erro, requisicao, resposta, proximo) => {
     )
 })
 
-app.listen(config.get('api.porta'), () => console.log('The API is ON!'))
+app.listen(config.get('api.porta'), () => console.log('The API in ON'))

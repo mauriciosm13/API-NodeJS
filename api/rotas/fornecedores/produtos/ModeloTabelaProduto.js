@@ -29,8 +29,8 @@ const opcoes = {
     freezeTableName: true,
     tableName: 'produtos',
     timestamps: true,
-    createAt: 'dataCriacao',
-    updateAt: 'dataAtualizacao',
+    createdAt: 'dataCriacao',
+    updatedAt: 'dataAtualizacao',
     version: 'versao'
 }
 
