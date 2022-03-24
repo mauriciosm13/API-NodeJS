@@ -3,25 +3,32 @@ const TabelaFornecedor = require('./TabelaFornecedor')
 const Fornecedor = require('./Fornecedor')
 const SerializadorFornecedor = require('../../Serializador').SerializadorFornecedor
 
-roteador.get('/', async (requisicao, resposta) => {
+roteador.options('/', (requisicao, resposta) => {
+    resposta.set('Acces-Control-Allow-Methods', 'GET , POST')
+    resposta.set('Acces-Control-Allow-Headers', 'Content-Type')
+    resposta.status(204)
+    resposta.end()
+})
+
+roteador.get('/', async(requisicao, resposta) => {
     const resultados = await TabelaFornecedor.listar()
     resposta.status(200)
     const serializador = new SerializadorFornecedor(
-        resposta.getHeader('Content-Type')
+        resposta.getHeader('Content-Type'), ['empresa']
     )
     resposta.send(
         serializador.serializar(resultados)
     )
 })
 
-roteador.post('/', async (requisicao, resposta, proximo) => {
+roteador.post('/', async(requisicao, resposta, proximo) => {
     try {
         const dadosRecebidos = requisicao.body
         const fornecedor = new Fornecedor(dadosRecebidos)
         await fornecedor.criar()
         resposta.status(201)
         const serializador = new SerializadorFornecedor(
-            resposta.getHeader('Content-Type')
+            resposta.getHeader('Content-Type'), ['empresa']
         )
         resposta.send(
             serializador.serializar(fornecedor)
@@ -31,15 +38,21 @@ roteador.post('/', async (requisicao, resposta, proximo) => {
     }
 })
 
-roteador.get('/:idFornecedor', async (requisicao, resposta, proximo) => {
+roteador.options('/:idFornecedor', (requisicao, resposta) => {
+    resposta.set('Acces-Control-Allow-Methods', 'GET, PUT, DELETE')
+    resposta.set('Acces-Control-Allow-Headers', 'Content-Type')
+    resposta.status(204)
+    resposta.end()
+})
+
+roteador.get('/:idFornecedor', async(requisicao, resposta, proximo) => {
     try {
         const id = requisicao.params.idFornecedor
         const fornecedor = new Fornecedor({ id: id })
         await fornecedor.carregar()
         resposta.status(200)
         const serializador = new SerializadorFornecedor(
-            resposta.getHeader('Content-Type'),
-            ['email', 'dataCriacao', 'dataAtualizacao', 'versao']
+            resposta.getHeader('Content-Type'), ['empresa', 'email', 'dataCriacao', 'dataAtualizacao', 'versao']
         )
         resposta.send(
             serializador.serializar(fornecedor)
@@ -49,7 +62,7 @@ roteador.get('/:idFornecedor', async (requisicao, resposta, proximo) => {
     }
 })
 
-roteador.put('/:idFornecedor', async (requisicao, resposta, proximo) => {
+roteador.put('/:idFornecedor', async(requisicao, resposta, proximo) => {
     try {
         const id = requisicao.params.idFornecedor
         const dadosRecebidos = requisicao.body
@@ -63,7 +76,7 @@ roteador.put('/:idFornecedor', async (requisicao, resposta, proximo) => {
     }
 })
 
-roteador.delete('/:idFornecedor', async (requisicao, resposta, proximo) => {
+roteador.delete('/:idFornecedor', async(requisicao, resposta, proximo) => {
     try {
         const id = requisicao.params.idFornecedor
         const fornecedor = new Fornecedor({ id: id })
@@ -78,7 +91,7 @@ roteador.delete('/:idFornecedor', async (requisicao, resposta, proximo) => {
 
 const roteadorProdutos = require('./produtos')
 
-const verificarFornecedor = async (requisicao, resposta, proximo) => {
+const verificarFornecedor = async(requisicao, resposta, proximo) => {
     try {
         const id = requisicao.params.idFornecedor
         const fornecedor = new Fornecedor({ id: id })

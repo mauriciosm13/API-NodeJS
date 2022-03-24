@@ -2,11 +2,11 @@ const ValorNaoSuportado = require('./erros/ValorNaoSuportado')
 const jsontoxml = require('jsontoxml')
 
 class Serializador {
-    json (dados) {
+    json(dados) {
         return JSON.stringify(dados)
     }
 
-    xml (dados) {
+    xml(dados) {
         let tag = this.tagSingular
 
         if (Array.isArray(dados)) {
@@ -18,10 +18,11 @@ class Serializador {
             })
         }
 
-        return jsontoxml({ [tag]: dados })
+        return jsontoxml({
+            [tag]: dados })
     }
 
-    serializar (dados) {
+    serializar(dados) {
         dados = this.filtrar(dados)
 
         if (this.contentType === 'application/json') {
@@ -35,7 +36,7 @@ class Serializador {
         throw new ValorNaoSuportado(this.contentType)
     }
 
-    filtrarObjeto (dados) {
+    filtrarObjeto(dados) {
         const novoObjeto = {}
 
         this.camposPublicos.forEach((campo) => {
@@ -47,7 +48,7 @@ class Serializador {
         return novoObjeto
     }
 
-    filtrar (dados) {
+    filtrar(dados) {
         if (Array.isArray(dados)) {
             dados = dados.map(item => {
                 return this.filtrarObjeto(item)
@@ -61,12 +62,11 @@ class Serializador {
 }
 
 class SerializadorFornecedor extends Serializador {
-    constructor (contentType, camposExtras) {
+    constructor(contentType, camposExtras) {
         super()
         this.contentType = contentType
         this.camposPublicos = [
             'id',
-            'empresa',
             'categoria'
         ].concat(camposExtras || [])
         this.tagSingular = 'fornecedor'
@@ -75,7 +75,7 @@ class SerializadorFornecedor extends Serializador {
 }
 
 class SerializadorProduto extends Serializador {
-    constructor (contentType, camposExtras) {
+    constructor(contentType, camposExtras) {
         super()
         this.contentType = contentType
         this.camposPublicos = [
@@ -88,7 +88,7 @@ class SerializadorProduto extends Serializador {
 }
 
 class SerializadorErro extends Serializador {
-    constructor (contentType, camposExtras) {
+    constructor(contentType, camposExtras) {
         super()
         this.contentType = contentType
         this.camposPublicos = [
