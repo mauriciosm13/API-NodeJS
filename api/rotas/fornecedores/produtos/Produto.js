@@ -1,7 +1,9 @@
 const Tabela = require('./TabelaProduto')
+const DadosNaoFornecidos = require('../../../erros/DadosNaoFornecidos')
+const CampoInvalido = require('../../../erros/CampoInvalido')
 
 class Produto {
-    constructor ({ id, titulo, preco, estoque, fornecedor, dataCriacao, dataAtualizacao, versao }) {
+    constructor({ id, titulo, preco, estoque, fornecedor, dataCriacao, dataAtualizacao, versao }) {
         this.id = id
         this.titulo = titulo
         this.preco = preco
@@ -12,17 +14,17 @@ class Produto {
         this.versao = versao
     }
 
-    validar () {
+    validar() {
         if (typeof this.titulo !== 'string' || this.titulo.length === 0) {
-            throw new Error('O campo titulo está inválido')
+            throw new CampoInvalido('titulo')
         }
 
         if (typeof this.preco !== 'number' || this.preco === 0) {
-            throw new Error('O campo preco está inválido')
+            throw new CampoInvalido('preço')
         }
     }
 
-    async criar () {
+    async criar() {
         this.validar()
         const resultado = await Tabela.inserir({
             titulo: this.titulo,
@@ -37,11 +39,11 @@ class Produto {
         this.versao = resultado.versao
     }
 
-    apagar () {
+    apagar() {
         return Tabela.remover(this.id, this.fornecedor)
     }
 
-    async carregar () {
+    async carregar() {
         const produto = await Tabela.pegarPorId(this.id, this.fornecedor)
         this.titulo = produto.titulo
         this.preco = produto.preco
@@ -51,27 +53,26 @@ class Produto {
         this.versao = produto.versao
     }
 
-    atualizar () {
+    atualizar() {
         const dadosParaAtualizar = {}
-        
-        if (typeof this.titulo === 'string' && this.titulo.length > 0){
+
+        if (typeof this.titulo === 'string' && this.titulo.length > 0) {
             dadosParaAtualizar.titulo = this.titulo
         }
-        
-        if (typeof this.preco === 'number' && this.preco > 0){
+
+        if (typeof this.preco === 'number' && this.preco > 0) {
             dadosParaAtualizar.preco = this.preco
         }
-        
+
         if (typeof this.estoque === 'number') {
             dadosParaAtualizar.estoque = this.estoque
         }
 
         if (Object.keys(dadosParaAtualizar).length === 0) {
-            throw new Error('Não foram fornecidos dados para atualizar')
+            throw new DadosNaoFornecidos('Não foram fornecidos dados para atualizar')
         }
 
-        return Tabela.atualizar(
-            {
+        return Tabela.atualizar({
                 id: this.id,
                 fornecedor: this.fornecedor
             },
@@ -79,7 +80,7 @@ class Produto {
         )
     }
 
-    diminuirEstoque () {
+    diminuirEstoque() {
         return Tabela.subtrair(
             this.id,
             this.fornecedor,
